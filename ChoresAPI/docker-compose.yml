@@ -1,0 +1,30 @@
+﻿version: '3.8'
+ 
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    depends_on:
+      - db
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=db;Database=ChoreDB;User=sa;Password=YourStrongPassword123!;TrustServerCertificate=True;
+ 
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfile.sqlserver
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrongPassword123!
+    volumes:
+      - ./init.sql:/docker-entrypooint-init.d/init.sql
+      - sqlserver_data:/var/opt/mssql
+ 
+volumes:
+  sqlserver_data:
